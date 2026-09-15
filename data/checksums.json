@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-09-13T00:11:00.316Z",
+  "versions": [
+    {
+      "id": "kjv",
+      "abbreviation": "KJV",
+      "verseCount": 31102,
+      "checksum": "803dc559207aa6664ff7357a1f13810cceee827dc0b9a9cd29757884447705d6"
+    },
+    {
+      "id": "kjv-mrk214",
+      "abbreviation": "KJV-MRK",
+      "verseCount": 31102,
+      "checksum": "2ca27ae576404a6de5d84f76b10e7ab3f7fa18d74c3429639865697c0646a4bd"
+    },
+    {
+      "id": "nasb2020-impact",
+      "abbreviation": "NASB 2020",
+      "verseCount": 1000,
+      "checksum": "a1c9460ff64e4935748803de52cdd6cb4aeeb258767e10af2f660486979a1d08"
+    },
+    {
+      "id": "web",
+      "abbreviation": "WEB",
+      "verseCount": 31103,
+      "checksum": "5442a495abc58d6d1c675efef03e6f7744dc00782d66345cc0d2f7ca161e49f9"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "web",
+  "name": "World English Bible",
+  "abbreviation": "WEB",
+  "language": "en",
+  "license": "Public Domain; World English Bible is a trademark of eBible.org",
+  "source": "TehShrike/world-english-bible JSON files derived from eBible.org World English Bible",
+  "sourceUrl": "https://github.com/TehShrike/world-english-bible",
+  "importedAt": "2026-09-12T19:02:06.008Z"
+}

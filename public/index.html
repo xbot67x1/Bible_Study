@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bible Study Agent</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="app-layout">
+        <aside class="app-sidebar" aria-label="Primary navigation">
+          <div>
+            <p class="eyebrow">Local Study</p>
+            <h1>Bible Study Agent</h1>
+          </div>
+
+          <nav class="page-nav" aria-label="Pages">
+            <button class="nav-item active" type="button" data-page-target="bible" aria-current="page">Bible</button>
+            <button class="nav-item" type="button" data-page-target="corpus">Local Corpus</button>
+            <button class="nav-item" type="button" data-page-target="favorites">Favorites</button>
+            <button class="nav-item" type="button" data-page-target="study">Study</button>
+            <button class="nav-item" type="button" data-page-target="settings">Settings</button>
+          </nav>
+        </aside>
+
+        <section class="page-shell">
+          <section id="page-bible" class="page active" data-page="bible">
+            <section class="study-panel">
+              <form id="questionForm" class="question-form">
+                <label for="question">Ask from the local Bible files</label>
+                <div class="query-row">
+                  <input id="question" name="question" type="search" placeholder="Try: John 3:16 or love one another" autocomplete="off">
+                  <button type="submit">Search</button>
+                </div>
+              </form>
+
+              <section class="answer-panel" aria-live="polite">
+                <div class="panel-heading">
+                  <h2>Results</h2>
+                  <span id="resultCount"></span>
+                </div>
+                <div id="results" class="results"></div>
+                <div id="copyrightNotice" class="copyright-notice"></div>
+              </section>
+            </section>
+          </section>
+
+          <section id="page-corpus" class="page" data-page="corpus">
+            <section class="corpus-panel">
+              <div class="panel-heading">
+                <h2>Local Corpus</h2>
+              </div>
+              <div id="versionList" class="version-list corpus-version-list" aria-live="polite"></div>
+            </section>
+          </section>
+
+          <section id="page-favorites" class="page" data-page="favorites">
+            <section class="favorites-panel">
+              <div class="panel-heading">
+                <h2>Favorites</h2>
+                <span id="favoriteCount"></span>
+              </div>
+              <div id="favoritesList" class="results favorites-list"></div>
+            </section>
+          </section>
+          <section id="page-study" class="page" data-page="study">
+            <section class="study-manager-panel">
+              <div class="panel-heading">
+                <h2>Study</h2>
+                <span id="studyCount"></span>
+              </div>
+
+              <form id="studyForm" class="study-form">
+                <label for="studyName">Study name</label>
+                <input id="studyName" name="studyName" type="text" placeholder="Marriage, prayer, Romans 8" autocomplete="off" required>
+
+                <label for="studyDescription">Description</label>
+                <textarea id="studyDescription" name="studyDescription" rows="3" placeholder="What this study is focused on"></textarea>
+
+                <button type="submit">Add Study</button>
+              </form>
+
+              <div id="studyList" class="study-list"></div>
+            </section>
+          </section>
+          <section id="page-settings" class="page blank-page" data-page="settings" aria-label="Settings"></section>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

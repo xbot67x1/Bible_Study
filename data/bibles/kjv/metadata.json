@@ -1,0 +1,10 @@
+{
+  "id": "kjv",
+  "name": "King James Version",
+  "abbreviation": "KJV",
+  "language": "en",
+  "license": "Public domain worldwide (1611, Oxford 1769 standard text).",
+  "source": "midvash/bible-data",
+  "sourceUrl": "https://github.com/midvash/bible-data/tree/main/versions/en/kjv",
+  "importedAt": "2026-09-12T19:06:37.165Z"
+}

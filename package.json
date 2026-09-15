@@ -1,0 +1,19 @@
+{
+  "name": "bible-study-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/server.js",
+    "import:midvash": "node scripts/import-midvash-bible.js",
+    "import:kjv": "node scripts/import-midvash-bible.js kjv",
+    "import:mrk214:kjv": "node scripts/import-mrk214-bible.js KJV",
+    "import:nasb1000": "node scripts/import-nasb1000.js",
+    "import:web": "node scripts/import-world-english-bible.js",
+    "validate": "node scripts/validate-corpus.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "kjv-mrk214",
+  "name": "King James Version (mrk214 source)",
+  "abbreviation": "KJV-MRK",
+  "language": "en",
+  "license": "Rights in the Authorized (King James) Version in the United Kingdom are vested in the Crown. Published by permission of the Crown’s patentee, Cambridge University Press.",
+  "source": "mrk214/bible-data-en-eng",
+  "sourceUrl": "https://github.com/mrk214/bible-data-en-eng",
+  "importedAt": "2026-09-12T19:25:06.931Z"
+}

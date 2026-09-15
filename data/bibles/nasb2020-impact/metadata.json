@@ -1,0 +1,14 @@
+{
+  "id": "nasb2020-impact",
+  "name": "New American Standard Bible 2020 Impact Set",
+  "abbreviation": "NASB 2020",
+  "language": "en",
+  "license": "Limited quotation subset under Lockman Foundation quoted-material guidelines. Maximum 1,000 verses stored; not a complete Bible.",
+  "source": "mrk214/bible-data-en-eng NASB2020 JSON subset",
+  "sourceUrl": "https://github.com/mrk214/bible-data-en-eng",
+  "importedAt": "2026-09-12T23:46:31.914Z",
+  "verseLimit": 1000,
+  "selectionMethod": "Deterministic impact subset: anchor passages plus keyword scoring, capped at 1,000 verses.",
+  "copyrightNotice": "Scripture quotations taken from the (NASB®) New American Standard Bible®, Copyright © 2020 by The Lockman Foundation. Used by permission. All rights reserved. www.Lockman.org",
+  "copyrightUrl": "https://www.lockman.org"
+}
