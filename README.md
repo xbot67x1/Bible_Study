@@ -18,6 +18,17 @@ npm run dev
 
 Then open `http://localhost:5173`.
 
+## Enable ChatGPT chat
+
+The Chat page uses the OpenAI Responses API. Keep the API key on the server by setting it as an environment variable before starting the app:
+
+```powershell
+$env:OPENAI_API_KEY="your-api-key"
+npm run dev
+```
+
+The default model is `gpt-5.5`. To use another model available to your OpenAI project, also set `OPENAI_MODEL`. On Railway, add both values as service variables instead of putting them in the repository.
+
 ## Add Bible versions
 
 Create one folder per Bible version:

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { CANONICAL_BOOKS } from "./books.js";
 import { parseReference } from "./reference-parser.js";
 
 const DEFAULT_LIMIT = 25;
@@ -78,6 +79,74 @@ export class BibleCorpus {
     }));
   }
 
+  listReferenceIndex() {
+    return this.versions.map((version) => {
+      const versionVerses = this.verses.filter((verse) => verse.version === version.id);
+      const books = new Map();
+
+      for (const verse of versionVerses) {
+        const chapters = books.get(verse.book) ?? new Map();
+        const verses = chapters.get(verse.chapter) ?? [];
+        verses.push(verse.verse);
+        chapters.set(verse.chapter, verses);
+        books.set(verse.book, chapters);
+      }
+
+      return {
+        id: version.id,
+        name: version.name,
+        abbreviation: version.abbreviation,
+        count: versionVerses.length,
+        books: Array.from(books.entries())
+          .toSorted(([bookA], [bookB]) => bookOrder(bookA) - bookOrder(bookB) || bookA.localeCompare(bookB))
+          .map(([book, chapters]) => {
+            const chapterList = Array.from(chapters.entries())
+              .toSorted(([chapterA], [chapterB]) => chapterA - chapterB)
+              .map(([chapter, verses]) => ({
+                chapter,
+                verses: Array.from(new Set(verses)).toSorted((a, b) => a - b)
+              }));
+            const firstChapter = chapterList[0];
+            const lastChapter = chapterList.at(-1);
+
+            return {
+              name: book,
+              count: chapterList.reduce((total, chapter) => total + chapter.verses.length, 0),
+              first: `${book} ${firstChapter.chapter}:${firstChapter.verses[0]}`,
+              last: `${book} ${lastChapter.chapter}:${lastChapter.verses.at(-1)}`,
+              chapters: chapterList
+            };
+          })
+      };
+    });
+  }
+
+  hasReference(query, translation) {
+    const reference = parseReference(query);
+    if (!reference || reference.startVerse === null) {
+      return { exists: false, recognizedReference: Boolean(reference), normalizedReference: null, versions: [] };
+    }
+
+    const matchingVersions = this.versions.filter((version) => versionMatchesTranslation(version, translation));
+    const matchedVersions = matchingVersions.filter((version) => this.verses.some((verse) => (
+      verse.version === version.id
+      && verse.book === reference.book
+      && verse.chapter === reference.chapter
+      && verse.verse >= reference.startVerse
+      && verse.verse <= reference.endVerse
+    )));
+    const normalizedReference = reference.endVerse > reference.startVerse
+      ? `${reference.book} ${reference.chapter}:${reference.startVerse}-${reference.endVerse}`
+      : `${reference.book} ${reference.chapter}:${reference.startVerse}`;
+
+    return {
+      exists: matchedVersions.length > 0,
+      recognizedReference: true,
+      normalizedReference,
+      versions: matchedVersions.map(({ id, abbreviation, name }) => ({ id, abbreviation, name }))
+    };
+  }
+
   search(query, options = {}) {
     const selectedVersions = new Set(options.versions?.length ? options.versions : this.versions.map((version) => version.id));
     const limit = Math.min(Number(options.limit) || DEFAULT_LIMIT, 100);
@@ -108,6 +177,27 @@ export class BibleCorpus {
       .slice(0, limit)
       .map((match) => match.verse);
   }
+}
+
+function bookOrder(book) {
+  const index = CANONICAL_BOOKS.indexOf(book);
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+}
+
+function versionMatchesTranslation(version, translation) {
+  const requested = normalizeTranslation(translation);
+  if (!requested) {
+    return false;
+  }
+
+  return [version.id, version.abbreviation, version.name].some((value) => {
+    const normalized = normalizeTranslation(value);
+    return normalized === requested || normalized.startsWith(requested) || requested.startsWith(normalized);
+  });
+}
+
+function normalizeTranslation(value) {
+  return String(value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
 function tokenize(query) {

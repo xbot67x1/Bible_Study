@@ -16,8 +16,8 @@
           </div>
 
           <nav class="page-nav" aria-label="Pages">
-            <button class="nav-item active" type="button" data-page-target="bible" aria-current="page">Bible</button>
-            <button class="nav-item" type="button" data-page-target="corpus">Local Corpus</button>
+            <button class="nav-item active" type="button" data-page-target="bible" aria-current="page">Search</button>
+            <button class="nav-item" type="button" data-page-target="chat">Chat</button>
             <button class="nav-item" type="button" data-page-target="favorites">Favorites</button>
             <button class="nav-item" type="button" data-page-target="study">Study</button>
             <button class="nav-item" type="button" data-page-target="settings">Settings</button>
@@ -28,10 +28,61 @@
           <section id="page-bible" class="page active" data-page="bible">
             <section class="study-panel">
               <form id="questionForm" class="question-form">
-                <label for="question">Ask from the local Bible files</label>
+                <div class="question-form-heading">
+                  <label for="question">Search the Bible and your verses</label>
+                  <button id="bibleAddVerseButton" class="add-verse-button" type="button" data-add-verse-button aria-expanded="false" aria-controls="bibleManualFavoriteForm">Add verse</button>
+                </div>
                 <div class="query-row">
                   <input id="question" name="question" type="search" placeholder="Try: John 3:16 or love one another" autocomplete="off">
                   <button type="submit">Search</button>
+                </div>
+              </form>
+
+              <form id="bibleManualFavoriteForm" class="manual-favorite-form" data-manual-favorite-form hidden>
+                <div class="form-heading">
+                  <h3>Add a verse</h3>
+                  <p>Enter a verse you are permitted to save for your personal study.</p>
+                </div>
+
+                <div class="manual-favorite-fields">
+                  <label>
+                    <span>Verse</span>
+                    <span class="reference-input-wrap">
+                      <input name="reference" type="text" data-manual-reference placeholder="John 3:16" maxlength="80" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" required>
+                      <span class="reference-suggestions" data-reference-suggestions role="listbox" hidden></span>
+                    </span>
+                  </label>
+
+                  <label>
+                    <span>Bible translation</span>
+                    <select name="translation" data-manual-translation required>
+                      <option value="NIV">NIV — New International Version</option>
+                      <option value="KJV">KJV — King James Version</option>
+                      <option value="NKJV">NKJV — New King James Version</option>
+                      <option value="ESV">ESV — English Standard Version</option>
+                      <option value="NLT">NLT — New Living Translation</option>
+                      <option value="NASB">NASB — New American Standard Bible</option>
+                      <option value="CSB">CSB — Christian Standard Bible</option>
+                      <option value="NRSV">NRSV — New Revised Standard Version</option>
+                      <option value="AMP">AMP — Amplified Bible</option>
+                      <option value="RSV">RSV — Revised Standard Version</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label>
+                  <span>Verse text</span>
+                  <textarea name="text" rows="4" data-manual-text maxlength="3000" placeholder="Type or paste the verse text" required></textarea>
+                </label>
+
+                <div class="manual-favorite-actions">
+                  <label class="favorite-toggle">
+                    <input type="checkbox" data-manual-add-favorite>
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span>Also add to Favorites</span>
+                  </label>
+                  <button type="submit">Add verse</button>
+                  <span class="form-status" data-manual-status role="status" aria-live="polite"></span>
                 </div>
               </form>
 
@@ -46,12 +97,24 @@
             </section>
           </section>
 
-          <section id="page-corpus" class="page" data-page="corpus">
-            <section class="corpus-panel">
+          <section id="page-chat" class="page" data-page="chat">
+            <section class="chat-panel">
               <div class="panel-heading">
-                <h2>Local Corpus</h2>
+                <div>
+                  <h2>Chat with ChatGPT</h2>
+                  <p class="chat-subtitle">Ask questions, explore a passage, or talk through a study topic.</p>
+                </div>
+                <button id="newChatButton" class="secondary-button compact-button" type="button">New chat</button>
               </div>
-              <div id="versionList" class="version-list corpus-version-list" aria-live="polite"></div>
+
+              <div id="chatMessages" class="chat-messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+
+              <form id="chatForm" class="chat-form">
+                <label class="sr-only" for="chatInput">Message ChatGPT</label>
+                <textarea id="chatInput" name="message" rows="2" maxlength="6000" placeholder="Message ChatGPT…" required></textarea>
+                <button id="sendChatButton" type="submit">Send</button>
+              </form>
+              <p id="chatStatus" class="chat-status" role="status" aria-live="polite">Powered by the OpenAI API. Chat history is saved in this browser.</p>
             </section>
           </section>
 
@@ -59,8 +122,67 @@
             <section class="favorites-panel">
               <div class="panel-heading">
                 <h2>Favorites</h2>
-                <span id="favoriteCount"></span>
+                <div class="favorites-heading-actions">
+                  <span id="favoriteCount"></span>
+                  <button id="addVerseButton" class="add-verse-button" type="button" data-add-verse-button aria-expanded="false" aria-controls="manualFavoriteForm">Add verse</button>
+                </div>
               </div>
+
+              <div class="favorites-tabs" role="tablist" aria-label="Saved verse filters">
+                <button class="favorites-tab active" type="button" role="tab" aria-selected="true" data-favorites-filter="all">All</button>
+                <button class="favorites-tab" type="button" role="tab" aria-selected="false" data-favorites-filter="favorites">Favorites</button>
+                <button class="favorites-tab" type="button" role="tab" aria-selected="false" data-favorites-filter="learning">Learning</button>
+                <button class="favorites-tab" type="button" role="tab" aria-selected="false" data-favorites-filter="memorized">Memorized</button>
+              </div>
+
+              <form id="manualFavoriteForm" class="manual-favorite-form" data-manual-favorite-form hidden>
+                <div class="form-heading">
+                  <h3>Add a verse</h3>
+                  <p>Enter a verse you are permitted to save for your personal study.</p>
+                </div>
+
+                <div class="manual-favorite-fields">
+                  <label>
+                    <span>Verse</span>
+                    <span class="reference-input-wrap">
+                      <input id="manualVerseReference" name="reference" type="text" data-manual-reference placeholder="John 3:16" maxlength="80" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" required>
+                      <span class="reference-suggestions" data-reference-suggestions role="listbox" hidden></span>
+                    </span>
+                  </label>
+
+                  <label>
+                    <span>Bible translation</span>
+                    <select id="manualVerseTranslation" name="translation" data-manual-translation required>
+                      <option value="NIV">NIV — New International Version</option>
+                      <option value="KJV">KJV — King James Version</option>
+                      <option value="NKJV">NKJV — New King James Version</option>
+                      <option value="ESV">ESV — English Standard Version</option>
+                      <option value="NLT">NLT — New Living Translation</option>
+                      <option value="NASB">NASB — New American Standard Bible</option>
+                      <option value="CSB">CSB — Christian Standard Bible</option>
+                      <option value="NRSV">NRSV — New Revised Standard Version</option>
+                      <option value="AMP">AMP — Amplified Bible</option>
+                      <option value="RSV">RSV — Revised Standard Version</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label>
+                  <span>Verse text</span>
+                  <textarea id="manualVerseText" name="text" rows="4" data-manual-text maxlength="3000" placeholder="Type or paste the verse text" required></textarea>
+                </label>
+
+                <div class="manual-favorite-actions">
+                  <label class="favorite-toggle">
+                    <input type="checkbox" data-manual-add-favorite>
+                    <span class="toggle-track" aria-hidden="true"></span>
+                    <span>Also add to Favorites</span>
+                  </label>
+                  <button type="submit">Add verse</button>
+                  <span id="manualFavoriteStatus" class="form-status" data-manual-status role="status" aria-live="polite"></span>
+                </div>
+              </form>
+
               <div id="favoritesList" class="results favorites-list"></div>
             </section>
           </section>
@@ -84,10 +206,59 @@
               <div id="studyList" class="study-list"></div>
             </section>
           </section>
-          <section id="page-settings" class="page blank-page" data-page="settings" aria-label="Settings"></section>
+          <section id="page-settings" class="page" data-page="settings">
+            <section class="corpus-panel">
+              <div class="panel-heading">
+                <h2>Settings</h2>
+              </div>
+
+              <section class="settings-section" aria-labelledby="localCorpusHeading">
+                <h3 id="localCorpusHeading">Local Corpus</h3>
+                <p>Choose which installed Bible versions and local collections are included in search.</p>
+                <div id="versionList" class="version-list corpus-version-list" aria-live="polite"></div>
+              </section>
+
+              <section class="settings-section reference-index-section" aria-labelledby="referenceIndexHeading">
+                <div class="reference-index-heading">
+                  <div>
+                    <h3 id="referenceIndexHeading">Searchable Verse Index</h3>
+                    <p>Browse books and verse references available in search. Verse text is not shown here.</p>
+                  </div>
+                  <span id="referenceIndexCount"></span>
+                </div>
+                <div id="referenceIndex" class="reference-index" aria-live="polite">
+                  <p class="empty-state">Open Settings to load the reference index.</p>
+                </div>
+              </section>
+            </section>
+          </section>
         </section>
       </section>
     </main>
+
+    <dialog id="removeFavoriteDialog" class="confirm-dialog" aria-labelledby="removeFavoriteTitle">
+      <div class="confirm-dialog-content">
+        <h2 id="removeFavoriteTitle">Remove favorite?</h2>
+        <p>Are you sure you want to remove this verse?</p>
+        <div class="confirm-dialog-actions">
+          <button id="cancelRemoveFavorite" class="secondary-button" type="button">Cancel</button>
+          <button id="confirmRemoveFavorite" class="danger-button" type="button">Remove</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="removeMemorizedDialog" class="confirm-dialog" aria-labelledby="removeMemorizedTitle">
+      <div class="confirm-dialog-content">
+        <h2 id="removeMemorizedTitle">Remove from Memorized?</h2>
+        <p>Are you sure you want to remove this verse from Memorized?</p>
+        <div class="confirm-dialog-actions">
+          <button id="cancelRemoveMemorized" class="secondary-button" type="button">Cancel</button>
+          <button id="moveMemorizedToLearning" class="secondary-button" type="button">Move to Learning</button>
+          <button id="confirmRemoveMemorized" class="danger-button" type="button">Remove</button>
+        </div>
+      </div>
+    </dialog>
+
     <script src="/app.js" type="module"></script>
   </body>
 </html>

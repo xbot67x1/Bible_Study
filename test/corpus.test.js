@@ -98,3 +98,63 @@ test("groups whole chapter references into one passage result per version", asyn
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test("lists searchable references without exposing verse text", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "bible-corpus-"));
+  const versionDir = path.join(root, "demo");
+  await mkdir(versionDir);
+  await writeFile(path.join(versionDir, "metadata.json"), JSON.stringify({
+    id: "demo",
+    name: "Demo Version",
+    abbreviation: "DMO",
+    language: "en",
+    license: "Test fixture",
+    source: "Unit test"
+  }));
+  await writeFile(path.join(versionDir, "verses.jsonl"), [
+    JSON.stringify({ version: "demo", book: "Genesis", chapter: 1, verse: 1, text: "hidden text" }),
+    JSON.stringify({ version: "demo", book: "Genesis", chapter: 1, verse: 2, text: "more hidden text" }),
+    JSON.stringify({ version: "demo", book: "Genesis", chapter: 50, verse: 26, text: "final hidden text" })
+  ].join("\n"));
+
+  try {
+    const corpus = new BibleCorpus(root);
+    await corpus.load();
+    const [version] = corpus.listReferenceIndex();
+    const [genesis] = version.books;
+
+    assert.equal(genesis.first, "Genesis 1:1");
+    assert.equal(genesis.last, "Genesis 50:26");
+    assert.deepEqual(genesis.chapters[0].verses, [1, 2]);
+    assert.equal("text" in genesis.chapters[0], false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("detects whether a reference and translation are already searchable", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "bible-corpus-"));
+  const versionDir = path.join(root, "demo");
+  await mkdir(versionDir);
+  await writeFile(path.join(versionDir, "metadata.json"), JSON.stringify({
+    id: "nasb2020",
+    name: "New American Standard Bible 2020",
+    abbreviation: "NASB 2020",
+    language: "en",
+    license: "Test fixture",
+    source: "Unit test"
+  }));
+  await writeFile(path.join(versionDir, "verses.jsonl"),
+    JSON.stringify({ version: "nasb2020", book: "Genesis", chapter: 1, verse: 1, text: "fixture text" }));
+
+  try {
+    const corpus = new BibleCorpus(root);
+    await corpus.load();
+
+    assert.equal(corpus.hasReference("Genesis 1:1", "NASB").exists, true);
+    assert.equal(corpus.hasReference("Genesis 1:1", "NIV").exists, false);
+    assert.equal(corpus.hasReference("Genesis 1:2", "NASB").exists, false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
